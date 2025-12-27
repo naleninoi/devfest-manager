@@ -1,50 +1,57 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { EventCard } from './event-card';
 import { SearchBar } from './search-bar';
+import { EventsService } from '../../core/events.service';
 
 @Component({
-  selector: 'app-event-list',
-  imports: [EventCard, SearchBar],
-  template: `
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 mb-4">Upcoming Events</h1>
-      <!-- TODO Mod 1: Add SearchBar here -->
-      <app-search-bar [(query)]="searchQuery" />
-      <p class="text-gray-500 mt-2">Searching for: {{ searchQuery() }}</p>
-    </div>
+    selector: 'app-event-list',
+    imports: [EventCard, SearchBar],
+    template: `
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">Upcoming Events</h1>
+            <!-- TODO Mod 1: Add SearchBar here -->
+            <app-search-bar [(query)]="searchQuery" />
+            <p class="text-gray-500 mt-2">Searching for: {{ searchQuery() }}</p>
+        </div>
 
-    <!-- TODO Mod 2: Wrap in @if (events.isLoading()) -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- TODO Mod 2: Use @for to iterate over resource -->
+        <!-- TODO Mod 2: Wrap in @if (events.isLoading()) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- TODO Mod 2: Use @for to iterate over resource -->
+            @if (events.error()) {
+                <div class="bg-red-100 text-red-700 p-4 rounded-lg mb-6">
+                    Failed to load events.
+                </div>
+            }
 
-      <!-- Static Placeholders for initial verify -->
-      <app-event-card
-        title="Angular Keynote"
-        image="/images/angular-keynote.png"
-        date="2025-12-10T09:00:00.000Z"
-        [initialLike]="true"
-        (delete)="onEventDeleted()"
-      />
-      <app-event-card
-        title="Signals Deep Dive"
-        image="/images/signals-deep-dive.png"
-        date="2025-12-30T09:00:00.000Z"
-        (delete)="onEventDeleted()"
-      />
-      <app-event-card
-        title="SSR at Scale"
-        image="/images/ssr-at-scale.png"
-        (delete)="onEventDeleted()"
-      />
-    </div>
-  `,
+            @if (events.isLoading()) {
+                <div class="text-center py-12 text-gray-500 animate-pulse">Loading events...</div>
+            }
+
+            @if (events.hasValue()) {
+                @for (event of events.value(); track event.id) {
+                    <app-event-card
+                        [title]="event.title"
+                        [image]="event.image"
+                        [date]="event.date"
+                        [initialLike]="false"
+                        (delete)="onEventDeleted()"
+                    />
+                } @empty {
+                    <p class="col-span-3 text-center text-gray-500">No events found.</p>
+                }
+            }
+        </div>
+    `,
 })
 export class EventList {
-  // TODO Mod 2: Inject Service and use resource()
+    // TODO Mod 2: Inject Service and use resource()
+    readonly eventsService = inject(EventsService);
 
-  searchQuery = signal('');
+    searchQuery = signal('');
 
-  onEventDeleted(): void {
-    console.log('Delete Clicked!');
-  }
+    readonly events = this.eventsService.getEventsResource(this.searchQuery);
+
+    onEventDeleted(): void {
+        console.log('Delete Clicked!');
+    }
 }
