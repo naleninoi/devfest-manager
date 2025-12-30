@@ -30,11 +30,11 @@ import { EventsService } from '../../core/events.service';
             @if (events.hasValue()) {
                 @for (event of events.value(); track event.id) {
                     <app-event-card
-                        [title]="event.title"
-                        [image]="event.image"
-                        [date]="event.date"
-                        [initialLike]="false"
-                        (delete)="onEventDeleted()"
+                      [title]="event.title"
+                      [image]="event.image"
+                      [date]="event.date"
+                      [initialLike]="false"
+                      (delete)="deleteEvent(event.id)"
                     />
                 } @empty {
                     <p class="col-span-3 text-center text-gray-500">No events found.</p>
@@ -51,7 +51,16 @@ export class EventList {
 
     readonly events = this.eventsService.getEventsResource(this.searchQuery);
 
-    onEventDeleted(): void {
-        console.log('Delete Clicked!');
+    deleteEvent(eventId: string): void {
+        this.eventsService.deleteEvent(eventId).subscribe({
+            next: () => {
+                this.events.set([]);
+                this.events.reload();
+            },
+            error: err => {
+                console.error('Delete failed', err);
+                alert('Could not delete event');
+            }
+        });
     }
 }
