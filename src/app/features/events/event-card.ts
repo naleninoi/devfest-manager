@@ -1,5 +1,4 @@
 import {
-    ChangeDetectionStrategy,
     Component,
     computed,
     input,
@@ -7,15 +6,15 @@ import {
     output,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-event-card',
-    imports: [DatePipe],
+    imports: [DatePipe, RouterLink],
     template: `
         <div
             class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
         >
-            <!-- TODO: Add Image -->
             <div class="relative h-48 w-full bg-gray-200">
                 <img
                     [src]="image()"
@@ -26,12 +25,10 @@ import { DatePipe } from '@angular/common';
 
             <div class="p-6">
                 <div class="flex justify-between items-center mt-4">
-                    <!-- TODO Mod 1: Add Date using DatePipe -->
                     <p class="text-sm text-blue-600 font-semibold mb-2">
                         {{ (date() | date: 'mediumDate') || 'TBA' }}
                     </p>
 
-                    <!-- TODO Mod 1: Add daysUntil() using @let -->
                     @let days = daysUntil();
                     @if (days != null) {
                         <div
@@ -48,11 +45,9 @@ import { DatePipe } from '@angular/common';
                     }
                 </div>
 
-                <!-- TODO Mod 1: Add Title Input -->
                 <h3 class="text-xl font-bold text-gray-800 my-2">{{ title() }}</h3>
 
                 <div class="flex justify-between items-center mt-4">
-                    <!-- TODO Mod 1: Add Derived State (Like Button) -->
                     <button
                         class="text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
                         [class.text-red-500]="isFavorite()"
@@ -61,7 +56,6 @@ import { DatePipe } from '@angular/common';
                         {{ isFavorite() ? '❤' : '♡' }} Like
                     </button>
 
-                    <!-- TODO Mod 1: Add Output -->
                     <button
                         class="text-gray-400 text-sm hover:text-gray-600 cursor-pointer"
                         (click)="removeEvent()"
@@ -71,7 +65,8 @@ import { DatePipe } from '@angular/common';
                 </div>
 
                 <div class="mt-4 pt-4 border-t border-gray-100 text-right">
-                    <a class="text-blue-600 font-medium hover:underline cursor-pointer">
+                    <a [routerLink]="['/event', id()]"
+                        class="text-blue-600 font-medium hover:underline cursor-pointer">
                         View Details →
                     </a>
                 </div>
@@ -80,7 +75,7 @@ import { DatePipe } from '@angular/common';
     `,
 })
 export class EventCard {
-    // TODO Mod 1: Implement input(), output(), and model()
+    id = input.required<string>();
     title = input.required<string>();
     image = input.required<string>();
     date = input<string>();

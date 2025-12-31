@@ -16,11 +16,5 @@ import { FormsModule } from '@angular/forms';
   `,
 })
 export class SearchBar {
-  // TODO add model
   query = model('');
-
-  onInputChange(event: Event): void {
-    const inputEl = event.target as HTMLInputElement;
-    this.query.set(inputEl.value);
-  }
 }
