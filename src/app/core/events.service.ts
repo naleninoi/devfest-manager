@@ -2,12 +2,14 @@ import { inject, Injectable, Signal } from '@angular/core';
 import { HttpClient, httpResource, HttpResourceRef } from '@angular/common/http';
 import { DevFestEvent } from '../models/event.model';
 import { Observable } from 'rxjs';
+import { API_URL } from './tokens';
 
 @Injectable({
     providedIn: 'root',
 })
 export class EventsService {
-    private apiUrl = 'http://localhost:3000/events';
+    private url = inject(API_URL);
+    private apiUrl = `${this.url}/events`;
 
     private readonly http = inject(HttpClient);
 

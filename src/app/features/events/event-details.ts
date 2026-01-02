@@ -2,6 +2,7 @@ import { Component, inject, input } from '@angular/core';
 import { EventsService } from '../../core/events.service';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { CartService } from '../../core/cart.service';
 
 @Component({
     selector: 'app-event-details',
@@ -28,7 +29,6 @@ import { DatePipe } from '@angular/common';
                 @let event = eventResource.value()!;
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 min-h-[600px]">
-
                     <!-- Left: Content -->
                     <div class="md:col-span-2 space-y-4">
                         <h1 class="text-4xl font-bold text-gray-900">{{ event.title }}</h1>
@@ -47,6 +47,7 @@ import { DatePipe } from '@angular/common';
 
                         <button
                             class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition"
+                            (click)="addTicket()"
                         >
                             Buy Tickets
                         </button>
@@ -60,6 +61,11 @@ export class EventDetails {
     readonly id = input.required<string>();
 
     readonly eventsService = inject(EventsService);
+    readonly cartService = inject(CartService);
 
     readonly eventResource = this.eventsService.getEventResource(this.id);
+
+    public addTicket(): void {
+        this.cartService.addTicket(this.id());
+    }
 }

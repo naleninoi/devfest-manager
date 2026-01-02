@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CartService } from '../core/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -27,15 +28,16 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
             Admin
           </a>
 
-          <!-- Day 1 Mod 5: Cart Counter will go here -->
           <button
             class="bg-white text-blue-700 px-4 py-2 rounded-full font-bold shadow hover:bg-gray-100 transition"
           >
-            Tickets: 0
+            Tickets: {{ count() }}
           </button>
         </nav>
       </div>
     </header>
   `,
 })
-export class Header {}
+export class Header {
+    readonly count = inject(CartService).count;
+}
