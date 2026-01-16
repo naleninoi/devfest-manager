@@ -21,7 +21,7 @@ export class CartService {
     public addTicket(eventId: string) {
         const previousIds = this.ticketIds();
         this.ticketIds.update(ids => [...ids, eventId]);
-        this.http.post(this.ticketsUrl + 'dd', {eventId}).subscribe({
+        this.http.post(this.ticketsUrl, {eventId}).subscribe({
             next: () => console.log('Optimistic update successful'),
             error: err => {
                 console.error(err);
