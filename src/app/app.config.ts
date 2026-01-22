@@ -7,16 +7,17 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        // Day 1: Zone.js enabled. Day 2: switch to provideZonelessChangeDetection()
         // provideZoneChangeDetection({ eventCoalescing: true }),
         provideZonelessChangeDetection(),
         provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
 
         provideHttpClient(withFetch()),
 
+        provideClientHydration(withEventReplay()),
+
         {
             provide: API_URL,
-            useValue: 'http://localhost:3000'
-        }, provideClientHydration(withEventReplay()),
+            useValue: 'http://localhost:3000',
+        }
     ],
 };
